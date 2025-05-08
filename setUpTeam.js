@@ -70,17 +70,22 @@ function selectTeam(objArrCL, objArrNC, objArrDB) {
     // để tiện mở rộng dùng function duyệt luôn thằng objArrCL, đk luôn có 1 thằng này
     for (let cl of objArrCL) {
         for (let i = 0; i < objArrNC.length; i++) {
-            // lấy vị trí j=i+1 tránh lắp thằng đã có
+            // lấy vị trí j=i+1 tránh lắp thằng đã có, kẹp đk chỉ chọn 1 hoặc 2
             for (let j = i + 1; j <= objArrNC.length && j - i <= 2; j++) {
-                let selectNC = objArrNC.slice(i, j);
-
+                let selectNC = objArrNC.slice(i, j).map(obj => ({ ...obj })); // bug, ==> lôi nó về obj bằng cách dùng map
                 if (selectNC.length === 1) {
+                    let nc = selectNC[0];
                     for (let db of objArrDB) {
-                        arrTeam.push(`[${cl.type} Name: ${cl.name}, ${selectNC.type} Name: ${selectNC.name}, ${db.type} Name: ${db.name}]`);
+                        // lấy luôn phần tử đầu ra show vì chỉ chọn 1, khi mở rộng cần chú ý comment trên có thể dùng biến rút ra obj cần
+                        // arrTeam.push(`[${cl.type} - Name: ${cl.name} + ${selectNC[0].type} - Name: ${selectNC[0].name} + ${db.type} - Name: ${db.name}]`);
+                        arrTeam.push(`\n[${cl.type} - Name: ${cl.name} + ${nc.type} - Name: ${nc.name} + ${db.type} - Name: ${db.name}]`);
                     }
                 } else {
+                    // bỏ vì ko sài đc join đúng 
                     //arrTeam.push(`${cl.type}, ${selectNC.type.join(", ")}`);
-                    console.log("bug1");
+                    // dùng map
+                    arrTeam.push(`\n[${cl.type} - Name: ${cl.name} + ${selectNC.map(nc => `${nc.type} - Name: ${nc.name}`).join(" + ")}]`);
+                    
                 }
             }
         }
